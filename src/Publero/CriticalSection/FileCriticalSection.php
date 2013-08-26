@@ -1,7 +1,7 @@
 <?php
 namespace Publero\CriticalSection;
 
-use Publero\CriticalSection\Exception\UnableToObtainLockException;
+use Publero\CriticalSection\Exception\UnableToObtainFileLockException;
 
 class FileCriticalSection implements CriticalSection
 {
@@ -30,25 +30,25 @@ class FileCriticalSection implements CriticalSection
      * @param string $code
      * @param int|null $timeoutSeconds
      * @return bool
-     * @throws UnableToObtainLockException
+     * @throws UnableToObtainFileLockException
      */
     public function enter($code, $timeoutSeconds = null)
     {
         if (empty($this->locks[$code])) {
             $this->locks[$code] = $this->getFile($code);
         }
-        $file = $this->locks[$code];
+        $file = &$this->locks[$code];
 
         if ($timeoutSeconds === null) {
             if ($file->flock(LOCK_EX)) {
                 return;
             }
 
-            throw new UnableToObtainLockException($code);
+            throw new UnableToObtainFileLockException($code, $this->getLockFileName($code));
         }
 
-        $endTime = mktime() + $timeoutSeconds;
-        while (mktime() < $endTime && !($lock = $file->flock(LOCK_EX | LOCK_NB))) {
+        $endTime = time() + $timeoutSeconds;
+        while (!($lock = $file->flock(LOCK_EX | LOCK_NB)) && time() < $endTime) {
             sleep(1);
         }
 
@@ -77,7 +77,7 @@ class FileCriticalSection implements CriticalSection
      */
     public function canEnter($code)
     {
-        if (!$this->getFile($code)->flock(LOCK_EX | LOCK_NB)) {
+        if ($this->getFile($code)->flock(LOCK_EX | LOCK_NB)) {
             return true;
         }
 

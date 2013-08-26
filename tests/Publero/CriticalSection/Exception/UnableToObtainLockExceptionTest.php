@@ -1,15 +1,17 @@
 <?php
 namespace tests\Publero\CriticalSection\Exception;
 
+use Publero\CriticalSection\Exception\UnableToObtainLockException;
+
 class UnableToObtainLockExceptionTest extends \PHPUnit_Framework_TestCase
 {
-    public function testGetMessage()
+    public function testGetLockCode()
     {
         $lockCode = 'test_code';
-        $exceptionCode = 3;
-        $exception = new UnableToObtainLockException($lockCode, $exceptionCode);
+        $message = 'Unable to get lock test_code';
+        $exception = new UnableToObtainLockException($lockCode, $message);
 
-        $this->assertEquals($exception->getMessage(), "Unable to obtain lock $lockCode, file is already locked or it couldn't be created");
-        $this->assertEquals($exception->getCode(), $exceptionCode);
+        $this->assertEquals($exception->getLockCode(), $lockCode);
+        $this->assertEquals($exception->getMessage(), $message);
     }
 }

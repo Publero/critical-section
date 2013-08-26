@@ -1,7 +1,7 @@
 {
     "name": "publero/critical-section",
     "type": "library",
-    "description": "Handles critical sections while executing multiple php scripts in parallel. Useful for cron and any other recurently run scripts.",
+    "description": "Handles critical sections while executing multiple php scripts in parallel. Useful for cron and any other recurrently run scripts.",
     "keywords": ["locker", "critical", "section", "parallel", "mutex", "semaphore"],
     "license": "MIT",
     "authors": [
@@ -23,5 +23,8 @@
     },
     "require": {
         "php": ">= 5.4.0"
+    },
+    "autoload": {
+        "psr-0": { "Publero\\CriticalSection\\": "src/" }
     }
 }
