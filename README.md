@@ -14,7 +14,7 @@ than minute, which leads to bugs as a same cron is executed in multiple process 
 You can encapsulate this code into critical section with use of this library.
 
 ``` php
-$criticalSection = new CriticalSection();
+$criticalSection = new FileCriticalSection();
 
 $criticalSection->enter('cron_long_task');
 doSomething();
@@ -35,7 +35,7 @@ You can also do timeout enter. This way you can say explicitly say how long shou
 This is useful if you want to do something, but you know it only make sense in some time interval.
 
 ``` php
-$criticalSection = new CriticalSection();
+$criticalSection = new FileCriticalSection();
 
 $code = __FILE__;
 if ($criticalSection->enter($code, 30)) {
@@ -53,7 +53,7 @@ If you are using everyminute cron (or even faster), we can assume that you can s
 To do so you can check if critical section can be entered before entering it.
 
 ``` php
-$criticalSection = new CriticalSection();
+$criticalSection = new FileCriticalSection();
 
 $code = __FILE__;
 if ($criticalSection->canEnter($code)) {
@@ -66,7 +66,7 @@ if ($criticalSection->canEnter($code)) {
 Another way to do so is to enter critical section with zero timeout.
 
 ``` php
-$criticalSection = new CriticalSection();
+$criticalSection = new FileCriticalSection();
 
 $code = __FILE__;
 if ($criticalSection->enter($code, 0)) {
